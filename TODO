@@ -1,3 +1,3 @@
-* Figure out how to avoid the 'missing templates' error (probably by repairing the AJAX communication)
+* Figure out how to avoid the 'missing template' error (probably by repairing the AJAX communication)
 * Get Pusher events to work so that spectators and players-waiting-for-turns can see move updates.
 * Rewrite things to improve readability and efficiency
