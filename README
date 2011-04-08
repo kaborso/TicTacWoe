@@ -2,4 +2,5 @@ I created this project to learn Ruby on Rails, so it's very rough. You have been
 
 Create a game by accessing the index and choosing a mark, then share the link with someone else 
 to challenge them. You do not have to create an account. A session cookie is created for the host
-of the game, and the first person to join that game gets a session cookie too. 
+of the game, and the first person to join that game gets a session cookie too. After that, anyone
+else who accesses the link can only watch.
