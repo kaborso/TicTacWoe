@@ -1,0 +1,2 @@
+* Get Pusher events to work so that spectators and players-waiting-for-turns can see move updates.
+* Rewrite things to improve readability and efficiency
