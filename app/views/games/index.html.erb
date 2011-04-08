@@ -1,0 +1,85 @@
+  <script>    
+      Array.prototype.diff = function(a) {
+	    return this.filter(function(i) {return !(a.indexOf(i) > -1);});
+	  };
+     
+      function generateString(length) {
+	    var str = "";
+        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for(var i=0; i < length; i++)
+          str += characters.charAt(Math.floor(Math.random() * characters.length));
+        
+        return str;
+      }
+      function connect(game) {
+		var shareURL = $.ajax({
+		  url: "game/new",
+	      global: false,
+          type: "POST",
+          data: (game),
+	      dataType: "text",
+          async:false,
+	      success: function() {
+            console.log("Contacted server!");
+		  }
+        }).responseText;
+
+        // Render pop-up
+        $("body").html("<a href='/game/" + shareURL+"'>Share this link and challenge someone to a game</a>");
+        //window.location.href += "/game/" + shareURL;
+      }
+
+      $(document).ready(function(){    
+		$("img#ochoice").mouseover(function() {
+		  $("img#ochoice").addClass("hover_choice");
+		  $("img#ochoice").removeClass("choice");
+		});
+		$("img#ochoice").mouseout(function() {
+	      $("img#ochoice").removeClass("hover_choice");
+		  $("img#ochoice").addClass("choice");
+	    });
+		$("img#xchoice").mouseover(function() {
+		  $("img#xchoice").addClass("hover_choice");
+		  $("img#xchoice").removeClass("choice");
+		});
+		$("img#xchoice").mouseout(function() {
+	      $("img#xchoice").removeClass("hover_choice");
+		  $("img#xchoice").addClass("choice");
+	    });	
+        $("img#ochoice").click(function(event) {	
+          $("div#board").show();
+          $("img#xchoice").fadeOut("slow");
+	      $("div#choices").fadeOut(1500, function() {
+            connect( { room : generateString(8), choice: 1 } );
+		  });
+	    });
+        $("img#xchoice").click(function(event) {	
+          $("div#board").show();
+          $("img#ochoice").fadeOut("slow");
+	      $("div#choices").fadeOut(1500, function() {
+            connect( { room : generateString(8), choice: -1 } );
+		  });
+	    });	
+	  });
+  </script>
+  <style type="text/css" media="screen">
+    
+  </style>
+
+  <div id="board">
+    <div id="cell0" class="cell"><img id="cimg0"/></div><div id="cell1" class="cell"><img id="cimg1"/></div><div id="cell2" class="cell"><img id="cimg2"/></div>
+    <div id="cell3" class="cell"><img id="cimg3"/></div><div id="cell4" class="cell"><img id="cimg4"/></div><div id="cell5" class="cell"><img id="cimg5"/></div>
+    <div id="cell6" class="cell"><img id="cimg6"/></div><div id="cell7" class="cell"><img id="cimg7"/></div><div id="cell8" class="cell"><img id="cimg8"/></div>
+  </div>
+  <div id="notification"></div>
+
+  <div id="choices">
+    <img id="ochoice" class="choice" src="images/1.png"/>
+    <img id="xchoice" class="choice" src="images/-1.png"/>
+  </div>
+  <div id="scores">
+  <div id="player_score">Wins:</div>
+	
+  <div id="opponent_score">Losses:</div>
+  </div>

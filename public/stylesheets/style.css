@@ -1,0 +1,80 @@
+body {
+  background-color: black;
+  color: white;
+}
+a {
+  color: white;
+}
+.cell {}
+div#choices {
+  height: 195px;
+  width: 195px;
+  background-color: black;
+  display: block;
+  position: absolute;
+  border: 1px solid white;
+
+}
+#xchoice {
+  left: 130px;
+  top: 63px;
+  position: absolute;
+  border-right: 1px solid white;
+}
+#ochoice {
+  left: -1px;
+  top: 64px;
+  position: absolute;
+  border-left: 1px solid white;
+}
+.choice {
+  border: 1px solid black;
+  
+}
+.hover_choice {
+  border: 1px solid white;
+}
+div#board {
+  display: none;
+  position:absolute;
+}
+div#board > div {
+  height: 64px;
+  width: 64px;
+  display: block;
+  position: absolute;
+  border: 1px solid white;
+  background-color: black;
+
+}
+div#notification {
+  position:absolute;
+  top: 205px;
+}
+#cimg0, #cimg1, #cimg2, #cimg3, #cimg4, #cimg5, #cimg6, #cimg7, #cimg8 {
+  display:none;
+}
+#cell0, #cell1, #cell2 {
+  top: 0px;
+}
+#cell3, #cell4, #cell5 {
+  top: 65px;
+}
+#cell6, #cell7, #cell8 {
+  top: 130px;
+}
+#cell0, #cell3, #cell6 {
+  left: 0px;
+}
+#cell1, #cell4, #cell7 {
+  left: 65px;
+}
+#cell2, #cell5, #cell8 {
+  left: 130px;
+}
+#player_score {
+  left: 20px;
+}
+#opponent_score {
+  right: -20px;
+}

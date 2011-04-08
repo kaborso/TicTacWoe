@@ -1,0 +1,37 @@
+<%- content_for :board do -%>
+<%= javascript_include_tag "game.js" %>
+
+<script>
+var choice = <%= @game.choice %>;
+var board = <%= @game.board %>;
+var turn = <%= @game.turn %>;
+var room = "<%= @game.room %>";
+
+$(document).ready(function(){
+  setup(board);
+  $("div.cell").click(function(event) {
+    $(this).children().attr("src", "../images/" + choice + ".png");
+    $(this).children().fadeIn();
+
+    var where = $(this).attr("id");
+    where = where.charAt(where.length-1);
+    data = { room: room, cell: where };
+    alert(send(data, "move"));
+  });
+});
+</script>
+
+  <div id="board">
+    <div id="cell0" class="cell"><img id="cimg0"/></div><div id="cell1" class="cell"><img id="cimg1"/></div><div id="cell2" class="cell"><img id="cimg2"/></div>
+    <div id="cell3" class="cell"><img id="cimg3"/></div><div id="cell4" class="cell"><img id="cimg4"/></div><div id="cell5" class="cell"><img id="cimg5"/></div>
+    <div id="cell6" class="cell"><img id="cimg6"/></div><div id="cell7" class="cell"><img id="cimg7"/></div><div id="cell8" class="cell"><img id="cimg8"/></div>
+  </div>
+
+  <div id="scores">
+  <div id="player_score">Wins:</div>
+	
+  <div id="opponent_score">Losses:</div>
+  </div>
+  <div id="notification"></div>
+
+<%- end -%>
