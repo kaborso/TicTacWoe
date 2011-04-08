@@ -33,6 +33,7 @@ GEM
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
+    configuration (1.2.0)
     crack (0.1.8)
     cucumber (0.10.2)
       builder (>= 2.1.2)
@@ -52,8 +53,14 @@ GEM
     fastercsv (1.5.4)
     gherkin (2.3.5)
       json (>= 1.4.6)
+    heroku (1.20.0.pre1)
+      launchy (~> 0.3.2)
+      rest-client (< 1.7.0, >= 1.4.0)
     i18n (0.5.0)
     json (1.5.1)
+    launchy (0.3.7)
+      configuration (>= 0.0.5)
+      rake (>= 0.8.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -87,6 +94,8 @@ GEM
     rake (0.8.7)
     render_inheritable (1.0.0)
       rails (~> 3.0)
+    rest-client (1.6.1)
+      mime-types (>= 1.16)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
       rspec-expectations (~> 2.5.0)
@@ -127,6 +136,7 @@ DEPENDENCIES
   annotate-models (= 1.0.4)
   cucumber
   em-http-request
+  heroku (= 1.20.0.pre1)
   json
   pusher
   rails (= 3.0.5)

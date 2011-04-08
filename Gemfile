@@ -7,6 +7,7 @@ gem 'rails', '3.0.5'
 
 gem 'sqlite3'
 gem 'em-http-request'
+gem 'heroku', '1.20.0.pre1'
 
 group :development do
   gem 'rspec-rails', '2.5.0'
@@ -14,6 +15,11 @@ group :development do
   gem 'annotate-models', '1.0.4'
   gem 'sinatra'
   gem 'cucumber'
+  gem 'pusher'
+  gem 'json'
+end
+
+group :production do
   gem 'pusher'
   gem 'json'
 end
