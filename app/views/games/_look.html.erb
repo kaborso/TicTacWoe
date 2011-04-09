@@ -3,15 +3,18 @@
 
 <script>
 var board = <%= @game.board %>;
-var pusher = new Pusher("4930");
+var pusher = new Pusher("ad3790b21f7dacec803e");
 var woefulChannel = pusher.subscribe("tictacwoe");
+Pusher.log = function(message) {
+  if (window.console && window.console.log) window.console.log(message);
+};
 
 $(document).ready(function() {
   setup(board);
 });
 
 woefulChannel.bind('mark-cell', function(move) {
-  move = jQuery.parseJSON(move);
+
   console.log("Pusher notification: " + move[0] + " (" + move[1] + ")");
   $("#cell" + move[0]).children().attr("src",  "../images/" + move[1] + ".png");
   $("#cell" + move[0]).children().fadeIn();
