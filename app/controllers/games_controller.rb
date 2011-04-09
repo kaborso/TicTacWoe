@@ -1,4 +1,4 @@
-require 'json'
+require 'json/pure'
 require 'pusher'
 
 Pusher.app_id = '4930'
