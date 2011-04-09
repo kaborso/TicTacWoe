@@ -16,7 +16,7 @@ class GamesController < ApplicationController
     if @game == nil
       @game = Game.new({:room => params[:room], :choice => params[:choice]})
       @game.pass = ""
-      @game.board = JSON.generate([0,0,0,0,0,0,0,0,0]);
+      @game.board = JSON.generate([0,0,0,0,0,0,0,0,0])
       @game.turn = (rand(2) == 1) ? 1 : -1
       @game.status = 0
       if @game.save
