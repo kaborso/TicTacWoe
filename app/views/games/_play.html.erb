@@ -2,15 +2,12 @@
 <%= javascript_include_tag "game.js" %>
 
 <script>
-var choice = <%= @game.choice %>;
+var choice = <%= (cookies.signed[:pass] == @game.room) ? @game.choice * -1 : @game.choice %>;
 var board = "<%= @game.board %>".split(",");
 var turn = <%= @game.turn %>;
 var room = "<%= @game.room %>";
 var pusher = new Pusher("ad3790b21f7dacec803e");
 var woefulChannel = pusher.subscribe("tictacwoe");
-Pusher.log = function(message) {
-  if (window.console && window.console.log) window.console.log(message);
-};
 
 $(document).ready(function() {
   setup(board);
@@ -19,12 +16,18 @@ $(document).ready(function() {
 woefulChannel.bind('mark-cell', function(move) {
   move = move.split(",");
   if(move[1] == (choice * -1)) {
-    console.log("Pusher notification: " + move[0] + " (" + move[1] + ")");
     $("#cell" + move[0]).children().attr("src",  "../images/" + move[1] + ".png");
     $("#cell" + move[0]).children().fadeIn();
+    $("div#notification").html("Your Turn");
   }
 });
-
+woefulChannel.bind('game-over', function(data) {
+  if(data == choice) {
+    $("div#notification").html("You won.");
+  } else {
+	$("div#notification").html("You lost.");
+  }
+});
 $(document).ready(function(){
   setup(board);
   $("div.cell").click(function(event) {
@@ -52,6 +55,10 @@ $(document).ready(function(){
 
   <div id="share">Game ID: <a href="<%= root_url + 'game/' + @game.room %> "> <%= @game.room %></a></div>
 
-  <div id="notification"></div>
+  <div id="notification">
+  <% if message then %>
+  <%= message %>
+  <% end %>
+  </div>
 
 <%- end -%>

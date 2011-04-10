@@ -28,7 +28,26 @@ class Game < ActiveRecord::Base
     (guest && guest.pass == pass) ? guest : nil
   end
   
-  def victory
+  def victory?
+    lines = Array.new
+    arr = self.board.split(',').map {|x| x.to_i}
+
+    lines[0] = arr[0] + arr[1] + arr[2]
+    lines[1] = arr[3] + arr[4] + arr[5]
+    lines[2] = arr[6] + arr[7] + arr[8]
+    lines[3] = arr[0] + arr[3] + arr[6]
+    lines[4] = arr[1] + arr[4] + arr[7]
+    lines[5] = arr[2] + arr[5] + arr[8]
+    lines[6] = arr[0] + arr[4] + arr[8]
+    lines[7] = arr[2] + arr[4] + arr[6]
     
+    puts lines.join(",")
+    lines.each do |x|
+      puts x
+      if x.abs == 3
+        return x/3
+      end
+    end
+    return 0
   end
 end

@@ -22,7 +22,7 @@ class GamesController < ApplicationController
         # Give the host a cookie
         cookies.permanent.signed[:lock] = @game.room
         puts "Game created in room " + cookies.signed[:lock]
-        render :partial => 'play.html', :layout => 'game.html', :object => @game
+        render :partial => 'play.html', :layout => 'game.html', :object => @game, :locals => {:message => (@game.turn == @game.choice) ? "Your Turn" : "Opponent's Turn"} 
         # render "enter"
         # render :text => @game.room
         # redirect_to "/game/"+ @game.room
@@ -37,90 +37,63 @@ class GamesController < ApplicationController
   end
 
   def enter
-    @message = "games/enter"
     puts "Entering the room"
     
     @game = Game.find_by_room(params[:room])
       
     if @game == nil
-      # Flash message
-      @message = "No game exists. Start a new one."
-      puts @message
       redirect_to "/game/new"
     else
       puts @game.inspect.to_s
       # Ask about the host's cookie
       if @game.status == 0
         if cookies.signed[:lock] == @game.room
-          puts "The hosting player has entered"          
           if @game.turn == @game.choice
-            @message = "Your Turn"
-            puts @message
-            render :partial => 'play', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Your Turn"} 
           else
-            @message = "Oppoent's Turn"
-            puts @message
-            render :partial => 'play', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Opponent's Turn"} 
           end
         elsif cookies.signed[:pass] == @game.pass
-          puts "The invited player has entered"
           # If it's not the host, check if the invitee has joined
           # if so, let him play    
           # Let the invitee into the room and give him a "Your Turn" or "Host's Turn" message
           
           if @game.turn == @game.choice
-            @message = "Oppoent's Turn"
-            puts @message
-            render :partial => 'play', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Opponent's Turn"} 
           else
-            @message = "Your Turn"
-            puts @message
-            @game.choice *= -1
-            render :partial => 'play', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Your Turn"} 
           end
         elsif @game.pass == ""
           # if not, try to let him in
-          puts "Let in the new player"
           begin
             # Update pass in database
             @game.pass = params[:room]
             @game.save
           rescue ActiveRecord::StaleObjectError
-            @message = "Game is no longer open, but you can spectate!"
-            puts @message
-            render :partial => 'look', :layout => 'game', :object => @game
+            # Game is no longer open, but this user can still spectate
+            render :partial => 'look', :layout => 'game', :object => @game, :locals => {:message => "Spectating"} 
           else
-            cookies.permanent.signed[:pass] = @game.room
-            
+            cookies.permanent.signed[:pass] = @game.room          
             if @game.turn == @game.choice
-              @message = "Oppoent's Turn"
-              puts @message
-              render :partial => 'play', :layout => 'game', :object => @game
+              render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Opponent's Turn"} 
             else
-              @message = "Your Turn"
-              puts @message
-              @game.choice *= -1
-              render :partial => 'play', :layout => 'game', :object => @game
+              render :partial => 'play', :layout => 'game', :object => @game, :locals => {:message => "Your Turn"} 
             end
           end
         else
           # Else, if there's no room (or, hah, if the game's over), let the user spectate
-          @message = "Spectating..."
-          puts @message
-          render :partial => 'look', :layout => 'game', :object => @game
+          render :partial => 'look', :layout => 'game', :object => @game, :locals => {:message => "Spectating"} 
         end      
       else
       # The game is closed  
       # Use timestamp to display date of the game 
-      @message = "Viewing Completed Game from (#{@game.updated_at.to_s})"
+      render :partial => 'look', :layout => 'game', :object => @game, 
+      :locals => {:message => "#{@game.updated_at.strftime('%B %d, %Y, %I:%M %p') }"} 
       end
     end
   end
   
-  def play
-    puts "A player is making a move"
-    @message =""
-        
+  def play        
     if cookies.signed[:lock] == params[:room] || cookies.signed[:pass] == params[:room]
       puts "This player is in this game session"
       @game = Game.find_by_room(params[:room])
@@ -128,54 +101,67 @@ class GamesController < ApplicationController
       @arr = @game.board.split(',').map {|x| x.to_i}
       
       if @game == nil
-        render :text => "Your play failed because the game does not exist."
+        render :text => "Your move failed because the game does not exist."
       else
-        if cookies.signed[:pass] == @game.room
-          # Invitee has played a move
-          if @game.choice == @game.turn
-            render :text => "0,It's your opponent's turn."
-          else
-            puts "Invitee marks cell " + @cell.to_s
-            if(@arr[@cell] == 0)
-              @arr[@cell] = @game.choice * -1
-              @game.turn *= -1
-              @game.board = @arr.join(',')
-              if @game.save
-                @move = [@cell, @arr[@cell]].join(',')
-                Pusher["tictacwoe"].trigger("mark-cell", @move)
-                puts "Pushed " + @move + " to host"
-                render :text => "1,"
-              end
+        if @game.status == 0
+          if cookies.signed[:pass] == @game.room
+            # Invitee has played a move 
+            if @game.choice == @game.turn
+              render :text => "0,It's not your turn."
             else
-              render :text => "0,You cannot move there."
-            end
-          end
-        elsif cookies.signed[:lock] == @game.room
-          # Host has played a move
-          if @game.choice == @game.turn         
-            if(@arr[@cell] == 0)
-              @arr[@cell] = @game.choice
-              @game.turn *= -1
-              @game.board = @arr.join(',')
-              if @game.save
-                @move = [@cell, @arr[@cell]].join(',')
-                Pusher["tictacwoe"].trigger("mark-cell", @move)
-                puts "Pushed " + @move + " to invitee"
-                render :text => "1,"
+              puts "Invitee marks cell " + @cell.to_s
+              if @arr[@cell] == 0
+                @arr[@cell] = @game.choice * -1
+                @game.turn *= -1
+                @game.board = @arr.join(',')
+                if @game.save
+                  @move = [@cell, @arr[@cell]].join(',')
+                  Pusher["tictacwoe"].trigger("mark-cell", @move)
+                  puts "Pushed " + @move + " to host"
+                  puts "Victory? " + @game.victory?.to_s
+                  if @game.victory? != 0 
+                    Pusher["tictacwoe"].trigger("game-over", @game.choice * -1)
+                    @game.status = 1
+                    @game.save
+                  end
+                  render :text => "1,Opponent's Turn"
+                end
+              else
+                render :text => "0,You can't move there."
               end
+            end        
+          elsif cookies.signed[:lock] == @game.room
+            # Host has played a move         
+            if @game.choice == @game.turn         
+              if @arr[@cell] == 0
+                @arr[@cell] = @game.choice
+                @game.turn *= -1
+                @game.board = @arr.join(',')
+                if @game.save
+                  @move = [@cell, @arr[@cell]].join(',')
+                  Pusher["tictacwoe"].trigger("mark-cell", @move)
+                  puts "Pushed " + @move + " to invitee"
+                  puts "Victory?" + @game.victory?.to_s
+                  if @game.victory? != 0 
+                    Pusher["tictacwoe"].trigger("game-over", @game.choice)
+                    @game.status = 1
+                    @game.save
+                  end
+                  render :text => "1,Opponent's Turn"                  
+                end
+              else
+                render :text => "0,You can't move there."
+              end                       
             else
-              render :text => "0,You cannot move there."
-            end                       
-          else
-            render :text => "0,It's your opponent's turn."
+              render :text => "0,It's not your turn."
+            end 
           end
-        end
+        else
+          render :text => "0,The game has ended."
+        end    
       end
-
-      # render :partial => 'look', :layout => 'enter', :object => @game, 
-      #        :locals => { :message => @message }      
     else
-      render :text => "You are not a player in this game."
-    end
+      render :text => "You're not a player in this game."
+    end  
   end
 end

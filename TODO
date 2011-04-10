@@ -1,3 +1,1 @@
-* Figure out how to avoid the 'missing template' error (probably by repairing the AJAX communication)
-* Fix the victory-checking code
 * Rewrite things to improve readability and efficiency

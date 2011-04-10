@@ -1,4 +1,4 @@
-function send(object, to, callback) {
+function send(object, to) {
   return $.ajax({
     url: to,
     global: false,

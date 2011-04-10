@@ -2,12 +2,10 @@
 <%= javascript_include_tag "game.js" %>
 
 <script>
+var choice = <%= @game.choice %>;
 var board = "<%= @game.board %>".split(",");
 var pusher = new Pusher("ad3790b21f7dacec803e");
 var woefulChannel = pusher.subscribe("tictacwoe");
-Pusher.log = function(message) {
-  if (window.console && window.console.log) window.console.log(message);
-};
 
 $(document).ready(function() {
   setup(board);
@@ -15,9 +13,16 @@ $(document).ready(function() {
 
 woefulChannel.bind('mark-cell', function(move) {
   move = move.split(",");
-  console.log("Pusher notification: " + move[0] + " (" + move[1] + ")");
   $("#cell" + move[0]).children().attr("src",  "../images/" + move[1] + ".png");
   $("#cell" + move[0]).children().fadeIn();
+});
+
+woefulChannel.bind('game-over', function(data) {
+  if(data == choice) {
+    $("div#notification").html("The host won.");
+  } else {
+	$("div#notification").html("The guest won.");
+  }
 });
 
 </script>
@@ -27,12 +32,12 @@ woefulChannel.bind('mark-cell', function(move) {
     <div id="cell3" class="cell"><img id="cimg3"/></div><div id="cell4" class="cell"><img id="cimg4"/></div><div id="cell5" class="cell"><img id="cimg5"/></div>
     <div id="cell6" class="cell"><img id="cimg6"/></div><div id="cell7" class="cell"><img id="cimg7"/></div><div id="cell8" class="cell"><img id="cimg8"/></div>
   </div>
+  <div id="share">Game ID: <a href="<%= root_url + 'game/' + @game.room %> "> <%= @game.room %></a></div>
 
-  <div id="scores">
-  <div id="player_score">Wins:</div>
-	
-  <div id="opponent_score">Losses:</div>
+  <div id="notification">
+  <% if message then %>
+  <%= message %>
+  <% end %>
   </div>
-  <div id="notification"></div>
 
 <%- end -%>

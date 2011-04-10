@@ -8,15 +8,14 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
+  <div id="content">
 <%
   message = nil if local_assigns[:message].nil? 
 %>
 
 <%= yield :board %>
 
-<% if message then %>
-<div id="alert">  <%= message %> </div>
-<% end %>
 
+  </div>
 </body>
 </html>

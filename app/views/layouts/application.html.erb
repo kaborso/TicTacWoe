@@ -8,8 +8,11 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-
+  <div id="content">
+	<%
+	  message = nil if local_assigns[:message].nil? 
+	%>
 <%= yield %>
-
+  </div>
 </body>
 </html>

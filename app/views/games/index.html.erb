@@ -4,7 +4,7 @@
 	  };
      
       function generateString(length) {
-	    var str = "";
+        var str = "";
         var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         for(var i=0; i < length; i++)
@@ -12,6 +12,7 @@
         
         return str;
       }
+
       function connect(game) {
 		return $.ajax({
 		  url: "game/new",
@@ -26,7 +27,7 @@
         }).responseText;
       }
 
-      $(document).ready(function(){    
+      $(document).ready(function(){
 		$("img#ochoice").mouseover(function() {
 		  $("img#ochoice").addClass("hover_choice");
 		  $("img#ochoice").removeClass("choice");
@@ -47,33 +48,28 @@
           $("div#board").show();
           $("img#xchoice").fadeOut("slow");
 	      $("div#choices").fadeOut(1500, function() {
-            $("body").html(connect( { room : generateString(8), choice: 1 } ));
+            $("div#content").html(connect( { room : generateString(8), choice: 1 } ));
 		  });
 	    });
         $("img#xchoice").click(function(event) {	
           $("div#board").show();
           $("img#ochoice").fadeOut("slow");
 	      $("div#choices").fadeOut(1500, function() {
-            $("body").html(connect( { room : generateString(8), choice: -1 } ));
+            $("div#content").html(connect( { room : generateString(8), choice: -1 } ));
 		  });
 	    });	
 	  });
   </script>
-  <style type="text/css" media="screen">
-    
-  </style>
 
   <div id="board">
     <div id="cell0" class="cell"><img id="cimg0"/></div><div id="cell1" class="cell"><img id="cimg1"/></div><div id="cell2" class="cell"><img id="cimg2"/></div>
     <div id="cell3" class="cell"><img id="cimg3"/></div><div id="cell4" class="cell"><img id="cimg4"/></div><div id="cell5" class="cell"><img id="cimg5"/></div>
     <div id="cell6" class="cell"><img id="cimg6"/></div><div id="cell7" class="cell"><img id="cimg7"/></div><div id="cell8" class="cell"><img id="cimg8"/></div>
   </div>
+  <div id="share">Select your mark.</div>
   <div id="notification"></div>
 
   <div id="choices">
     <img id="ochoice" class="choice" src="images/1.png"/>
     <img id="xchoice" class="choice" src="images/-1.png"/>
-  </div>
-  <div id="scores">
-
   </div>
