@@ -7,7 +7,7 @@ gem 'rails', '3.0.5'
 
 gem 'sqlite3'
 gem 'em-http-request'
-gem 'heroku', '1.20.0.pre1'
+gem 'heroku'
 
 # gem 'sinatra'
 # gem 'cucumber'
