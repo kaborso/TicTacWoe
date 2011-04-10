@@ -4,7 +4,7 @@ Tictactoe::Application.routes.draw do
   match "game/move" => "games#play"
   
   match "game/:room" => "games#enter"
-  
+    
   root :to => "games#index"
 
   # The priority is based upon order of creation:

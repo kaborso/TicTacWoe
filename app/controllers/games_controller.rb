@@ -22,7 +22,9 @@ class GamesController < ApplicationController
         # Give the host a cookie
         cookies.permanent.signed[:lock] = @game.room
         puts "Game created in room " + cookies.signed[:lock]
-        render :text => @game.room
+        render :partial => 'play.html', :layout => 'game.html', :object => @game
+        # render "enter"
+        # render :text => @game.room
         # redirect_to "/game/"+ @game.room
         # redirect_to :action => 'enter', :room => @game.room
         

@@ -13,7 +13,7 @@
         return str;
       }
       function connect(game) {
-		var shareURL = $.ajax({
+		return $.ajax({
 		  url: "game/new",
 	      global: false,
           type: "POST",
@@ -24,10 +24,6 @@
             console.log("Contacted server!");
 		  }
         }).responseText;
-
-        // Render pop-up
-        $("body").html("<a href='/game/" + shareURL+"'>Share this link to challenge someone to a game!</a>");
-        //window.location.href += "/game/" + shareURL;
       }
 
       $(document).ready(function(){    
@@ -51,14 +47,14 @@
           $("div#board").show();
           $("img#xchoice").fadeOut("slow");
 	      $("div#choices").fadeOut(1500, function() {
-            connect( { room : generateString(8), choice: 1 } );
+            $("body").html(connect( { room : generateString(8), choice: 1 } ));
 		  });
 	    });
         $("img#xchoice").click(function(event) {	
           $("div#board").show();
           $("img#ochoice").fadeOut("slow");
 	      $("div#choices").fadeOut(1500, function() {
-            connect( { room : generateString(8), choice: -1 } );
+            $("body").html(connect( { room : generateString(8), choice: -1 } ));
 		  });
 	    });	
 	  });
