@@ -49,7 +49,12 @@ div#board > div {
 }
 div#notification {
   position:absolute;
-  top: 205px;
+  top: 14.2em;
+}
+div#share {
+  position:absolute;
+  top: 13em;
+  
 }
 #cimg0, #cimg1, #cimg2, #cimg3, #cimg4, #cimg5, #cimg6, #cimg7, #cimg8 {
   display:none;

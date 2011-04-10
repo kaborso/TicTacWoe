@@ -58,7 +58,7 @@ class GamesController < ApplicationController
           else
             @message = "Oppoent's Turn"
             puts @message
-            render :partial => 'look', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game
           end
         elsif cookies.signed[:pass] == @game.pass
           puts "The invited player has entered"
@@ -69,7 +69,7 @@ class GamesController < ApplicationController
           if @game.turn == @game.choice
             @message = "Oppoent's Turn"
             puts @message
-            render :partial => 'look', :layout => 'game', :object => @game
+            render :partial => 'play', :layout => 'game', :object => @game
           else
             @message = "Your Turn"
             puts @message
@@ -93,7 +93,7 @@ class GamesController < ApplicationController
             if @game.turn == @game.choice
               @message = "Oppoent's Turn"
               puts @message
-              render :partial => 'look', :layout => 'game', :object => @game
+              render :partial => 'play', :layout => 'game', :object => @game
             else
               @message = "Your Turn"
               puts @message
@@ -131,7 +131,7 @@ class GamesController < ApplicationController
         if cookies.signed[:pass] == @game.room
           # Invitee has played a move
           if @game.choice == @game.turn
-            # It's not his turn
+            render :text => "0,It's your opponent's turn."
           else
             puts "Invitee marks cell " + @cell.to_s
             if(@arr[@cell] == 0)
@@ -142,10 +142,10 @@ class GamesController < ApplicationController
                 @move = [@cell, @arr[@cell]].join(',')
                 Pusher["tictacwoe"].trigger("mark-cell", @move)
                 puts "Pushed " + @move + " to host"
-                render :text => "Opponent's turn"
+                render :text => "1,"
               end
             else
-              render :text => "Invalid move"
+              render :text => "0,You cannot move there."
             end
           end
         elsif cookies.signed[:lock] == @game.room
@@ -159,13 +159,13 @@ class GamesController < ApplicationController
                 @move = [@cell, @arr[@cell]].join(',')
                 Pusher["tictacwoe"].trigger("mark-cell", @move)
                 puts "Pushed " + @move + " to invitee"
-                render :text => "Opponent's turn"
+                render :text => "1,"
               end
             else
-              render :text => "Invalid move"
+              render :text => "0,You cannot move there."
             end                       
           else
-            # It's not his turn
+            render :text => "0,It's your opponent's turn."
           end
         end
       end

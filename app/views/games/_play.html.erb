@@ -6,17 +6,38 @@ var choice = <%= @game.choice %>;
 var board = "<%= @game.board %>".split(",");
 var turn = <%= @game.turn %>;
 var room = "<%= @game.room %>";
+var pusher = new Pusher("ad3790b21f7dacec803e");
+var woefulChannel = pusher.subscribe("tictacwoe");
+Pusher.log = function(message) {
+  if (window.console && window.console.log) window.console.log(message);
+};
+
+$(document).ready(function() {
+  setup(board);
+});
+
+woefulChannel.bind('mark-cell', function(move) {
+  move = move.split(",");
+  if(move[1] == (choice * -1)) {
+    console.log("Pusher notification: " + move[0] + " (" + move[1] + ")");
+    $("#cell" + move[0]).children().attr("src",  "../images/" + move[1] + ".png");
+    $("#cell" + move[0]).children().fadeIn();
+  }
+});
 
 $(document).ready(function(){
   setup(board);
   $("div.cell").click(function(event) {
-    $(this).children().attr("src", "../images/" + choice + ".png");
-    $(this).children().fadeIn();
-
-    var where = $(this).attr("id");
+	var where = $(this).attr("id");
     where = where.charAt(where.length-1);
     data = { room: room, cell: where };
-    alert(send(data, "move"));
+    var response = send(data, "move");
+    response = response.split(",");
+    $("div#notification").html(response[1]);
+    if(response[0] == 1) {
+      $(this).children().attr("src", "../images/" + choice + ".png");
+      $(this).children().fadeIn();
+    }
   });
 });
 </script>
@@ -27,11 +48,8 @@ $(document).ready(function(){
     <div id="cell6" class="cell"><img id="cimg6"/></div><div id="cell7" class="cell"><img id="cimg7"/></div><div id="cell8" class="cell"><img id="cimg8"/></div>
   </div>
 
-  <div id="scores">
-  <div id="player_score">Wins:</div>
-	
-  <div id="opponent_score">Losses:</div>
-  </div>
+
   <div id="notification"></div>
+  <div id="share"></div>
 
 <%- end -%>
