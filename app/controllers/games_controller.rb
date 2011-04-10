@@ -107,7 +107,7 @@ class GamesController < ApplicationController
           # Else, if there's no room (or, hah, if the game's over), let the user spectate
           @message = "Spectating..."
           puts @message
-          render :partial => 'play', :layout => 'game', :object => @game
+          render :partial => 'look', :layout => 'game', :object => @game
         end      
       else
       # The game is closed  
