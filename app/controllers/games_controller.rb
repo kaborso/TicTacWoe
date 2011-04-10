@@ -1,4 +1,3 @@
-require 'json/pure'
 require 'pusher'
 
 Pusher.app_id = '4930'
@@ -16,7 +15,7 @@ class GamesController < ApplicationController
     if @game == nil
       @game = Game.new({:room => params[:room], :choice => params[:choice]})
       @game.pass = ""
-      @game.board = JSON.generate([0,0,0,0,0,0,0,0,0])
+      @game.board = [0,0,0,0,0,0,0,0,0].join(',')
       @game.turn = (rand(2) == 1) ? 1 : -1
       @game.status = 0
       if @game.save
@@ -124,7 +123,7 @@ class GamesController < ApplicationController
       puts "This player is in this game session"
       @game = Game.find_by_room(params[:room])
       @cell = params[:cell].to_i
-      @arr = JSON.parse(@game.board)
+      @arr = @game.board.split(',').map {|x| x.to_i}
       
       if @game == nil
         render :text => "Your play failed because the game does not exist."
@@ -138,9 +137,9 @@ class GamesController < ApplicationController
             if(@arr[@cell] == 0)
               @arr[@cell] = @game.choice * -1
               @game.turn *= -1
-              @game.board = @arr.to_s
+              @game.board = @arr.join(',')
               if @game.save
-                @move = JSON.generate([@cell, @arr[@cell]])
+                @move = [@cell, @arr[@cell]].join(',')
                 Pusher["tictacwoe"].trigger("mark-cell", @move)
                 puts "Pushed " + @move + " to host"
                 render :text => "Opponent's turn"
@@ -155,9 +154,9 @@ class GamesController < ApplicationController
             if(@arr[@cell] == 0)
               @arr[@cell] = @game.choice
               @game.turn *= -1
-              @game.board = @arr.to_s
+              @game.board = @arr.join(',')
               if @game.save
-                @move = JSON.generate([@cell, @arr[@cell]])
+                @move = [@cell, @arr[@cell]].join(',')
                 Pusher["tictacwoe"].trigger("mark-cell", @move)
                 puts "Pushed " + @move + " to invitee"
                 render :text => "Opponent's turn"

@@ -27,4 +27,8 @@ class Game < ActiveRecord::Base
     guest = find_by_id(id)
     (guest && guest.pass == pass) ? guest : nil
   end
+  
+  def victory
+    
+  end
 end

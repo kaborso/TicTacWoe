@@ -3,7 +3,7 @@
 
 <script>
 var choice = <%= @game.choice %>;
-var board = <%= @game.board %>;
+var board = "<%= @game.board %>".split(",");
 var turn = <%= @game.turn %>;
 var room = "<%= @game.room %>";
 

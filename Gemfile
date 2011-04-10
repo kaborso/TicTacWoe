@@ -9,19 +9,18 @@ gem 'sqlite3'
 gem 'em-http-request'
 gem 'heroku', '1.20.0.pre1'
 
+# gem 'sinatra'
+# gem 'cucumber'
+
 group :development do
   gem 'rspec-rails', '2.5.0'
   gem 'typus'
   gem 'annotate-models', '1.0.4'
-  gem 'sinatra'
-  gem 'cucumber'
   gem 'pusher'
-  gem 'json'
 end
 
 group :production do
   gem 'pusher'
-  gem 'json'
 end
 
 # Use unicorn as the web server

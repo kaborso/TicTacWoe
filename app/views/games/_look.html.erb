@@ -2,7 +2,7 @@
 <%= javascript_include_tag "game.js" %>
 
 <script>
-var board = <%= @game.board %>;
+var board = "<%= @game.board %>".split(",");
 var pusher = new Pusher("ad3790b21f7dacec803e");
 var woefulChannel = pusher.subscribe("tictacwoe");
 Pusher.log = function(message) {
@@ -14,7 +14,7 @@ $(document).ready(function() {
 });
 
 woefulChannel.bind('mark-cell', function(move) {
-
+  move = move.split(",");
   console.log("Pusher notification: " + move[0] + " (" + move[1] + ")");
   $("#cell" + move[0]).children().attr("src",  "../images/" + move[1] + ".png");
   $("#cell" + move[0]).children().fadeIn();
