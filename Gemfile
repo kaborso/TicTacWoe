@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.0.20'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -15,7 +15,7 @@ gem 'heroku'
 group :development do
   gem 'rspec-rails', '2.5.0'
   gem 'typus'
-  gem 'annotate-models', '1.0.4'
+  gem 'annotate'
   gem 'pusher'
 end
 
